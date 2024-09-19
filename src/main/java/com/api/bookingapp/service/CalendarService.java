@@ -1,7 +1,7 @@
 package com.api.bookingapp.service;
 
 import com.api.bookingapp.adapter.CalendarAdapter;
-import com.api.bookingapp.adapter.WhatsAppMessageAdapter;
+import com.api.bookingapp.adapter.TwilioWhatsAppMessageAdapter;
 import com.api.bookingapp.model.CalendarEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class CalendarService {
     @Autowired
     private CalendarAdapter calendarAdapter;
     @Autowired
-    private WhatsAppMessageAdapter whatsAppMessageAdapter;
+    private TwilioWhatsAppMessageAdapter twilioWhatsAppMessageAdapter;
     public List<CalendarEvent> getEventsForDay (LocalDate localDate) throws IOException {
         return calendarAdapter.getEventsForDay(localDate);
     }
@@ -24,12 +24,12 @@ public class CalendarService {
     }
     public void createEvent(CalendarEvent calendarEvent, String timeZone) throws IOException {
         calendarAdapter.createEvent(calendarEvent, timeZone);
-        whatsAppMessageAdapter.sendConfirmationMessage(calendarEvent);
+        twilioWhatsAppMessageAdapter.sendConfirmationMessage(calendarEvent);
     }
     public void sendRemainderMessage() throws IOException {
         List<CalendarEvent> tomorrowEvents = calendarAdapter.getEventsForTomorrow();
         tomorrowEvents.forEach(calendarEvent -> {
-            whatsAppMessageAdapter.sendReminderMessage(calendarEvent);
+            twilioWhatsAppMessageAdapter.sendReminderMessage(calendarEvent);
         });
     }
 }

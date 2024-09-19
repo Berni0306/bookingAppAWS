@@ -11,9 +11,11 @@ import java.io.IOException;
 
 @Component
 public class MetaWhatsAppMessageAdapter implements WhatsAppMessageAdapter {
-    private final String API_URL = "https://graph.facebook.com/v20.0/359929220528585/messages";
-    private final String ACCESS_TOKEN = "EAApY7iW61IEBO2Y9qeoeibZCNTuiPG8ZBMSAwpgrxruSJ9d2MabgqGujwKYnx30ZCY7MeRamhNCaOZCmxy2ETbOF0pC1bVfoVpP32mFz68R1YuTZCOshzhEtdH3XLkomDPxixijHRDr8yKV9ZA1jevSVbS7UeRsVimKZAFW0F8zyJ1npVC1D6XU5ED07eARw8C0UD46ZAXgOU6ICUwHOg5tJJeuZB";
+    private final String API_URL = "https://graph.facebook.com/v20.0/391538777384153/messages";
+    private final String ACCESS_TOKEN = "EAAH7av1o9VoBO8D09Gt3GU1u1Jo6wvZCEPGigOyyhQZChF51AGVQqK1vrbJhykMRHYWBamuJFV4dbIS8AzZA9sMaYI0Ji8iWiteIX1Vwz0nWAGs00Y0ZAO4ss3kNvTRPrnDitL6rCLaPtq2kAZBE1mnrUuZBLa2kpMknQylXUOBQlR1qGvtlnt2etgQdReZCVlJqvtLyjByv3nphmo3gpTNLJq9asi5qFZCMRO4ZD";
     private final String SEPARATOR_SUMMARY_EVENT = ":";
+    private final String DOCTOR_NAME = "Dra. Fernanda Romero";
+    private final String DOCTOR_CONTACT = "4171049568";
     @Override
     public void sendConfirmationMessage(CalendarEvent calendarEvent) {
         String[] eventData = calendarEvent.getSummary().split(SEPARATOR_SUMMARY_EVENT);
@@ -29,7 +31,7 @@ public class MetaWhatsAppMessageAdapter implements WhatsAppMessageAdapter {
                     + "\"to\": \"52" + eventData[1] + "\","
                     + "\"type\": \"text\","
                     + "\"text\": {"
-                    + "\"body\": \"Hola " + eventData[0] + ", tu cita esta confirmada para el dia "
+                    + "\"body\": \"Hola " + eventData[0].trim() + ", tu cita esta confirmada con la " + DOCTOR_NAME + " para el dia "
                     + dateData[0] + " a las " + dateData[1].substring(0, 5) + "hrs.\""
                     + "}"
                     + "}";
@@ -59,8 +61,8 @@ public class MetaWhatsAppMessageAdapter implements WhatsAppMessageAdapter {
                     + "\"to\": \"52" + eventData[1] + "\","
                     + "\"type\": \"text\","
                     + "\"text\": {"
-                    + "\"body\": \"Hola " + eventData[0] + ", recuerda que el dia de mañana "
-                    + dateData[0] + " a las " + dateData[1].substring(0, 5) + "hrs tienes una cita.\""
+                    + "\"body\": \"Hola " + eventData[0].trim() + ", recuerda que el dia de mañana "
+                    + dateData[0] + " a las " + dateData[1].substring(0, 5) + "hrs tienes una cita programada.\""
                     + "}"
                     + "}";
 
