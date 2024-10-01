@@ -24,6 +24,7 @@ public class GoogleCalendarConfig {
     private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    private static final int PORT = 8888;
     @Bean
     public Calendar getCalendarService() throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -41,7 +42,7 @@ public class GoogleCalendarConfig {
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File("tokens")))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 }

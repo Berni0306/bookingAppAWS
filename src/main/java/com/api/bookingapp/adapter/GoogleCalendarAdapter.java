@@ -7,6 +7,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,9 +21,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Component
 public class GoogleCalendarAdapter implements CalendarAdapter{
-    private final int OPENING_TIME = 10; // 10am
-    private final int CLOSING_TIME = 18; // 6pm
-    private final int APPOINTMENT_DURATION = 2; // hours per appointment
+    @Value("${calendar.opening-time}")
+    private int OPENING_TIME;
+    @Value("${calendar.closing-time}")
+    private int CLOSING_TIME;
+    @Value("${calendar.appointment-duration}")
+    private int APPOINTMENT_DURATION;
 
     @Autowired
     private Calendar calendarService;

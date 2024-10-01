@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 @Component
-public class TwilioWhatsAppMessageAdapter implements WhatsAppMessageAdapter{
+public class TwilioSmsMessageAdapter implements SmsMessageAdapter{
     @Value("${message.doctor-name}")
     private String DOCTOR_NAME;
     @Value("${message.doctor-contact}")
@@ -67,13 +67,13 @@ public class TwilioWhatsAppMessageAdapter implements WhatsAppMessageAdapter{
         LocalDate date = LocalDate.parse(timeParts[0], formatterIn);
         String appointmentDate = date.format(formatterOut);
         String appointmentTime = timeParts[1].substring(0, 5);
-    return new MessageData(DOCTOR_NAME, patientName, DOCTOR_CONTACT,
-            patientContact, appointmentDate, appointmentTime);
+        return new MessageData(DOCTOR_NAME, patientName, DOCTOR_CONTACT,
+                patientContact, appointmentDate, appointmentTime);
     }
     private void sendMessage(String toPhone, String message) {
-        Message.creator(
-                new PhoneNumber("whatsapp:+521" + toPhone), // Prefijo MEXICO "whatsapp:+52"
-                new PhoneNumber(twilioMessageConfig.getTwilioWhatsAppNumber()),
+        Message m = Message.creator(
+                new PhoneNumber("+52" + toPhone), // Prefijo MEXICO "+52"
+                new PhoneNumber(twilioMessageConfig.getTwilioSmsNumber()),
                 message
         ).create();
     }
