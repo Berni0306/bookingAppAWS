@@ -17,9 +17,9 @@ public class CalendarService {
 
     @Autowired
     private CalendarAdapter calendarAdapter;
-    @Autowired
-    @Qualifier("twilioWhatsAppMessageAdapter")
-    private WhatsAppMessageAdapter whatsAppMessageAdapter;
+    //@Autowired
+    //@Qualifier("twilioWhatsAppMessageAdapter")
+    //private WhatsAppMessageAdapter whatsAppMessageAdapter;
     @Autowired
     private SmsMessageAdapter smsMessageAdapter;
     public List<CalendarEvent> getEventsForDay (LocalDate localDate) {
@@ -43,11 +43,11 @@ public class CalendarService {
         } catch (IOException e) {
             throw new CalendarServiceException("Error creating calendar event", e);
         }
-        try {
-            whatsAppMessageAdapter.sendConfirmationMessage(calendarEvent);
-        } catch (IOException e) {
-            throw new CalendarServiceException("Error sending WhatsApp confirmation message", e);
-        }
+        //try {
+        //    whatsAppMessageAdapter.sendConfirmationMessage(calendarEvent);
+        //} catch (IOException e) {
+        //    throw new CalendarServiceException("Error sending WhatsApp confirmation message", e);
+        //}
         try {
             smsMessageAdapter.sendConfirmationMessage(calendarEvent);
         } catch (IOException e) {
@@ -58,11 +58,11 @@ public class CalendarService {
         try {
             List<CalendarEvent> tomorrowEvents = calendarAdapter.getEventsForTomorrow();
             tomorrowEvents.forEach(calendarEvent -> {
-                try {
-                    whatsAppMessageAdapter.sendReminderMessage(calendarEvent);
-                } catch (IOException e) {
-                    throw new CalendarServiceException("Error sending WhatsApp reminder message", e);
-                }
+                //try {
+                //    whatsAppMessageAdapter.sendReminderMessage(calendarEvent);
+                //} catch (IOException e) {
+                //    throw new CalendarServiceException("Error sending WhatsApp reminder message", e);
+                //}
                 try {
                     smsMessageAdapter.sendReminderMessage(calendarEvent);
                 } catch (IOException e) {
