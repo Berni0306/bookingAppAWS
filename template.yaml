@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Lambda application that calls the Lambda API.
+
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  BookingAppFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: com.api.bookingapp.StreamLambdaHandler::handleRequest
+      Runtime: java17
+      Description: Java function
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          TWILIO_ACCOUNTSID: AC584f94bbbc15f681e551dbd20007d4d7
+          TWILIO_AUTHTOKEN: 526db329268c9f7924931f1e60c67f34
+      Timeout: 30
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+      Tracing: Active
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+    Metadata:
+      SamResourceId: BookingAppFunction
