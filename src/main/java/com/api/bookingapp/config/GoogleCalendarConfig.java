@@ -1,48 +1,47 @@
 package com.api.bookingapp.config;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.S3Object;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.client.json.gson.GsonFactory;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
-
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GoogleCalendarConfig {
-    private static final String APPLICATION_NAME = "booking app";
+    private static final String APPLICATION_NAME = "bookingappjava";
     private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    private static final int PORT = 8888;
+
+    private final AmazonS3 s3client;
+
+    public GoogleCalendarConfig(AmazonS3 s3client) {
+        this.s3client = s3client;
+    }
     @Bean
-    public Calendar getCalendarService() throws Exception {
+    public Calendar getCalendarService() throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        S3Object s3Object = s3client.getObject("my-sam-bookingapp", "credentials.json");
+        InputStream credentialsStream = s3Object.getObjectContent();
+        GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream)
+                .createScoped(SCOPES);
+
+        return new Calendar.Builder(
+                HTTP_TRANSPORT,
+                JSON_FACTORY,
+                new HttpCredentialsAdapter(credentials))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-    }
-    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
-        InputStream in = GoogleCalendarConfig.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        assert in != null;
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File("tokens")))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 }

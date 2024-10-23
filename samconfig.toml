@@ -1,7 +1,7 @@
 version = 0.1
 [default.deploy.parameters]
 stack_name = "booking-app"
-resolve_s3 = true
+resolve_s3 = false
 s3_prefix = "booking-app"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"

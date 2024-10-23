@@ -48,11 +48,11 @@ public class CalendarService {
         //} catch (IOException e) {
         //    throw new CalendarServiceException("Error sending WhatsApp confirmation message", e);
         //}
-        try {
-            smsMessageAdapter.sendConfirmationMessage(calendarEvent);
-        } catch (IOException e) {
-            throw new CalendarServiceException("Error sending SMS confirmation message", e);
-        }
+        //try {
+        //   smsMessageAdapter.sendConfirmationMessage(calendarEvent);
+        //} catch (IOException e) {
+        //    throw new CalendarServiceException("Error sending SMS confirmation message", e);
+        //}
     }
     public void sendRemainderMessage() {
         try {

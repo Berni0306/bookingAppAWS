@@ -27,6 +27,8 @@ public class GoogleCalendarAdapter implements CalendarAdapter{
     private int CLOSING_TIME;
     @Value("${calendar.appointment-duration}")
     private int APPOINTMENT_DURATION;
+    @Value("${calendar.calendar-id}")
+    private String CALENDAR_ID;
 
     @Autowired
     private Calendar calendarService;
@@ -38,7 +40,7 @@ public class GoogleCalendarAdapter implements CalendarAdapter{
         DateTime startDateTime = new DateTime(Date.from(startOfDay.toInstant()));
         DateTime endDateTime = new DateTime(Date.from(endOfDay.toInstant()));
 
-        Events events = calendarService.events().list("primary")
+        Events events = calendarService.events().list(CALENDAR_ID)
                 .setTimeMin(startDateTime)
                 .setTimeMax(endDateTime)
                 .setOrderBy("startTime")
@@ -54,13 +56,13 @@ public class GoogleCalendarAdapter implements CalendarAdapter{
     }
     @Override
     public List<String> getAvailableTimeSlots(LocalDate localDate) throws IOException {
-        ZonedDateTime startOfDay = localDate.atTime(OPENING_TIME, 0).atZone(ZoneId.systemDefault());
-        ZonedDateTime endOfDay = localDate.atTime(CLOSING_TIME, 0).atZone(ZoneId.systemDefault());
+        ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.systemDefault());
+        ZonedDateTime endOfDay = localDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault());
 
         DateTime googleStartOfDay = new DateTime(Date.from(startOfDay.toInstant()));
         DateTime googleEndOfDay = new DateTime(Date.from(endOfDay.toInstant()));
 
-        Events events = calendarService.events().list("primary")
+        Events events = calendarService.events().list(CALENDAR_ID)
                 .setTimeMin(googleStartOfDay)
                 .setTimeMax(googleEndOfDay)
                 .setOrderBy("startTime")
@@ -100,7 +102,7 @@ public class GoogleCalendarAdapter implements CalendarAdapter{
                 .setTimeZone(timeZone);
         googleEvent.setEnd(end);
 
-        calendarService.events().insert("primary", googleEvent).execute();
+        calendarService.events().insert(CALENDAR_ID, googleEvent).execute();
     }
     @Override
     public List<CalendarEvent> getEventsForTomorrow() throws IOException {
@@ -111,7 +113,7 @@ public class GoogleCalendarAdapter implements CalendarAdapter{
         DateTime startDateTime = new DateTime(Date.from(startOfDay.toInstant()));
         DateTime endDateTime = new DateTime(Date.from(endOfDay.toInstant()));
 
-        Events events = calendarService.events().list("primary")
+        Events events = calendarService.events().list(CALENDAR_ID)
                 .setTimeMin(startDateTime)
                 .setTimeMax(endDateTime)
                 .setOrderBy("startTime")
