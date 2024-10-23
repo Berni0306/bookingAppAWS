@@ -17,10 +17,6 @@ Resources:
       Architectures:
         - x86_64
       MemorySize: 512
-      Environment:
-        Variables:
-          TWILIO_ACCOUNTSID: AC584f94bbbc15f681e551dbd20007d4d7
-          TWILIO_AUTHTOKEN: 526db329268c9f7924931f1e60c67f34
       Timeout: 30
       Policies:
         - AWSLambdaBasicExecutionRole
